@@ -9,6 +9,7 @@ class PrimerParcial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Imagenes(),
     );
   }
@@ -45,12 +46,62 @@ class Imagenes extends StatelessWidget {
             childAspectRatio: isLandscape ? 1 : 1,
           ),
           itemBuilder: (context, index) {
-            return Image.network(
-              imageUrls[index],
-              fit: BoxFit.cover,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        FullScreenImage(imageUrl: imageUrls[index]),
+                  ),
+                );
+              },
+              child: Image.network(
+                imageUrls[index],
+                fit: BoxFit.cover,
+              ),
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class FullScreenImage extends StatelessWidget {
+  final String imageUrl;
+  const FullScreenImage({required this.imageUrl, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Center(
+            child: OrientationBuilder(
+              builder: (context, orientation) {
+                return Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                );
+              },
+            ),
+          ),
+          Positioned(
+            top: 40,
+            left: 16,
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
